@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pastex</title>
+
+  <link rel="stylesheet" href="/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+
+    .pagination-element.active {
+      font-size: 16pt;
+    }
+
+    .pagination-element {
+      margin-left: 10px;
+    }
+  </style>
+
+</head>
+<body>
+<div class="d-flex align-items-center justify-content-center" style="flex-direction: column;height: 100vh;">
+  <div>
+    <div th:if="${#lists.isEmpty(pastePage.content)}">No pastes</div>
+    <div th:unless="${#lists.isEmpty(pastePage.content)}">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Created at</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="paste, iStat : ${pastePage.content}"
+            th:style="${iStat.odd}? 'font-weight: bold;'"
+            th:alt-title="${iStat.even}? 'even' : 'odd'">
+          <td>
+            <span th:if="${paste.isPrivate==true}"><i class="fas fa-lock" style="margin-right:5px"></i></span>
+            <a th:href="@{/paste/{id}(id=${paste.id})}" th:text="${paste.title}" target="_top"/>
+          </td>
+          <td th:text="${paste.createdAt}"/>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div th:if="${pastePage.totalPages > 0}" class="pagination">
+  <span th:each="pageNumber : ${pageNumbers}" class="pagination-element">
+    <a th:href="@{/paste(size=${pastePage.size}, page=${pageNumber})}"
+       th:text=${pageNumber}
+       th:class="${pageNumber==pastePage.number + 1} ? 'pagination-element active'"></a>
+  </span>
+    </div>
+    <a th:href="@{/paste/new}" class="btn btn-primary" target="_top">Add new</a>
+  </div>
+</div>
+</body>
+</html>
